@@ -13,15 +13,15 @@ pipeline {
             }
         }
 
-       
-
         stage('Build HTML') {
             steps {
                 script {
-                    // Add any necessary build or processing steps for HTML files here
-                    // For example, convert SASS/LESS to CSS, minify JavaScript, etc.
-                    sh "npm install" // Install necessary dependencies
-                    sh "npm run build" // Execute the build script
+                    def htmldir = "html"
+                    dir("${workspace}/${htmldir}") {
+                        // Run npm install in the "html" directory where package.json is located
+                        sh "npm install"
+                        // Add additional build steps here, if needed
+                    }
                 }
             }
         }
@@ -37,4 +37,3 @@ pipeline {
         }
     }
 }
-                       
