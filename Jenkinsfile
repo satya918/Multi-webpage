@@ -1,40 +1,25 @@
 pipeline {
     agent any
-    
+
+    environment {
+        TOMCAT_WEBAPPS = '/var/lib/tomcat9/webapps' // Set this to the actual path of the Tomcat webapps directory
+    }
+
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the code from the Git repository
                 checkout scm
             }
         }
-        
-        stage('Deploy to Tomcat') {
-            steps {
+
+        stage('Copy HTML to Tomcat') {
+           steps {
                 script {
-                    // Define the path to your Tomcat webapps directory
-                    def tomcatWebapps = "/var/lib/tomcat9/webapps"
-                    
-                    // Directory where your HTML files are located
-                    def htmlDir = "html"
-                    
-                    // Verify if the tomcatWebapps directory exists
-                    if (!fileExists(tomcatWebapps)) {
-                        error("Tomcat webapps directory does not exist: ${tomcatWebapps}")
-                    }
-                    
-                    // Verify if the htmlDir directory exists
-                    if (!fileExists(htmlDir)) {
-                        error("HTML directory does not exist: ${htmlDir}")
-                    }
-                    
-                    // Deploy each HTML file to Tomcat webapps directory
-                    sh "cp -r ${htmlDir}/* ${tomcatWebapps}/"
+                    def tomcatWebappsDir = "/var/lib/tomcat9/webapps/ROOT/"
+                    def htmldir="html"
+                    sh "cp *.html ${tomcatWebappsDir}"
                 }
             }
         }
     }
-}
-
-def fileExists(path) {
-    return file(path).exists()
-}
